@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HBC Quiz - Login & Register</title>
+  <link rel="stylesheet" href="Registration.css">
+  <link rel="icon" type="image/png" href="title.png">
+</head>
+<body>
+  <div class="form-container" id="registerForm">
+    <h1> HBC </h1>
+    <hr>
+    <h2>Register</h2>
+    <input type="text" id="regName" placeholder="Full Name">
+    <input type="text" id="regUser" placeholder="Username">
+    <input type="password" id="regPass" placeholder="Password">
+    <input type="password" id="regConfirm" placeholder="Confirm Password">
+    <button onclick="register()">Sign Up</button>
+    <div class="toggle" onclick="toggleForms('login')">Already have an account? Login</div>
+    <div class="message" id="regMessage"></div>
+  </div>
+
+  <div class="form-container" id="loginForm" style="display: none;">
+    <h1> HBC </h1>
+    <hr>
+    <h2>Login</h2>
+    <input type="text" id="loginUser" placeholder="Username">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div class="toggle" onclick="toggleForms('register')">New here? Register</div>
+    <div class="message" id="loginMessage"></div>
+  </div>
+
+  <script>
+    function toggleForms(form) {
+      document.getElementById("registerForm").style.display = form === 'register' ? 'block' : 'none';
+      document.getElementById("loginForm").style.display = form === 'login' ? 'block' : 'none';
+    }
+
+    function register() {
+      const name = document.getElementById('regName').value.trim();
+      const user = document.getElementById('regUser').value.trim();
+      const pass = document.getElementById('regPass').value;
+      const confirm = document.getElementById('regConfirm').value;
+
+      if (!name || !user || !pass || !confirm) {
+        document.getElementById('regMessage').textContent = "Please fill all fields.";
+        return;
+      }
+
+      if (pass !== confirm) {
+        document.getElementById('regMessage').textContent = "Passwords do not match.";
+        return;
+      }
+
+      if (localStorage.getItem(user)) {
+        document.getElementById('regMessage').textContent = "Username already exists.";
+        return;
+      }
+
+      localStorage.setItem(user, JSON.stringify({ name, pass }));
+      document.getElementById('regMessage').textContent = "Registered successfully! You can now login.";
+    }
+
+    function login() {
+      const user = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value;
+
+      const data = localStorage.getItem(user);
+      if (!data) {
+        document.getElementById('loginMessage').textContent = "Username not found.";
+        return;
+      }
+
+      const userData = JSON.parse(data);
+      if (userData.pass !== pass) {
+        document.getElementById('loginMessage').textContent = "Incorrect password.";
+        return;
+      }
+
+      // ✅ Store name globally
+      localStorage.setItem("HBC_PlayerName", userData.name);
+
+      document.getElementById('loginMessage').textContent = "Login successful! Redirecting...";
+      setTimeout(() => {
+        window.location.href = "rules.html";
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
