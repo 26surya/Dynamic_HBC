@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>HBC Quiz - Login & Register</title>
-  <link rel="stylesheet" href="Registration.css">
   <link rel="icon" type="image/png" href="title.png">
+<link rel="stylesheet" href="Registration.css">
+
 </head>
 <body>
+
   <div class="form-container" id="registerForm">
     <h1> HBC </h1>
     <hr>
@@ -20,8 +22,8 @@
     <div class="message" id="regMessage"></div>
   </div>
 
-  <div class="form-container" id="loginForm" style="display: none;">
-    <h1> HBC </h1>
+   <div class="form-container" id="loginForm" style="display: none;">
+    <h1>HBC</h1>
     <hr>
     <h2>Login</h2>
     <input type="text" id="loginUser" placeholder="Username">
@@ -43,45 +45,57 @@
       const pass = document.getElementById('regPass').value;
       const confirm = document.getElementById('regConfirm').value;
 
+      const msg = document.getElementById('regMessage');
+      msg.textContent = "";
+
       if (!name || !user || !pass || !confirm) {
-        document.getElementById('regMessage').textContent = "Please fill all fields.";
+        msg.textContent = "Please fill all fields.";
         return;
       }
 
       if (pass !== confirm) {
-        document.getElementById('regMessage').textContent = "Passwords do not match.";
+        msg.textContent = "Passwords do not match.";
         return;
       }
 
       if (localStorage.getItem(user)) {
-        document.getElementById('regMessage').textContent = "Username already exists.";
+        msg.textContent = "Username already exists. Please login.";
         return;
       }
 
-      localStorage.setItem(user, JSON.stringify({ name, pass }));
-      document.getElementById('regMessage').textContent = "Registered successfully! You can now login.";
+       localStorage.setItem(user, JSON.stringify({ name, pass }));
+
+       localStorage.setItem("HBC_PlayerName", name);
+
+      msg.textContent = "Registered successfully! Redirecting...";
+
+       setTimeout(() => {
+        window.location.href = "rules.html";
+      }, 1000);
     }
 
     function login() {
       const user = document.getElementById('loginUser').value.trim();
       const pass = document.getElementById('loginPass').value;
+      const msg = document.getElementById('loginMessage');
+
+      msg.textContent = "";
 
       const data = localStorage.getItem(user);
       if (!data) {
-        document.getElementById('loginMessage').textContent = "Username not found.";
+        msg.textContent = "Username not found.";
         return;
       }
 
       const userData = JSON.parse(data);
       if (userData.pass !== pass) {
-        document.getElementById('loginMessage').textContent = "Incorrect password.";
+        msg.textContent = "Incorrect password.";
         return;
       }
 
-      // ✅ Store name globally
-      localStorage.setItem("HBC_PlayerName", userData.name);
+       localStorage.setItem("HBC_PlayerName", userData.name);
 
-      document.getElementById('loginMessage').textContent = "Login successful! Redirecting...";
+      msg.textContent = "Login successful! Redirecting...";
       setTimeout(() => {
         window.location.href = "rules.html";
       }, 1000);
